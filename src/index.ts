@@ -8,6 +8,9 @@ import {
 } from './util';
 import type { Authenticity, SubFetch } from './util';
 
+export { acceptMimeMap, UploadError };
+export type { Authenticity, SubFetch };
+
 type UploadPoliciesAssetsRsonpse = {
   upload_url: string;
   form: Record<string, string>;
@@ -15,8 +18,6 @@ type UploadPoliciesAssetsRsonpse = {
   asset_upload_url: string;
   asset_upload_authenticity_token: string;
 };
-
-export { acceptMimeMap, UploadError };
 
 export type PoliciesAsset = {
   id: number;
