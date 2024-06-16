@@ -13,7 +13,7 @@ pnpm add user-attachments
 ```ts
 import fs from 'node:fs/promises';
 import process from 'node:process';
-import { uploadPoliciesAssets } from '../src/index';
+import { uploadPoliciesAssets } from 'user-attachments';
 
 const asset = await uploadPoliciesAssets({
   cookie: await fs.readFile(process.cwd() + '/test/cookie.txt', 'utf-8'),
