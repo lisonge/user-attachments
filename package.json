@@ -1,0 +1,26 @@
+{
+  "name": "user-attachments",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "unbuild"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@types/node": "20.14.0",
+    "tsx": "4.11.0",
+    "typescript": "5.4.5",
+    "unbuild": "2.0.0"
+  },
+  "volta": {
+    "node": "20.14.0"
+  }
+}
