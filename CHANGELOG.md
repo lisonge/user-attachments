@@ -1,3 +1,3 @@
-# v1.1.0
+# v1.1.1
 
-- feat: custom fetch and optional cookie
+- fix: export params type
