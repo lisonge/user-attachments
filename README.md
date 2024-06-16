@@ -44,3 +44,39 @@ console.log(asset);
 }
 */
 ```
+
+## options
+
+```ts
+export type UolpadOptions = {
+  file: File;
+
+  /**
+   * the cookie string of the github page, you can get it from the browser developer tools
+   *
+   * if you not set it, you must set fetch parameter
+   */
+  cookie?: string;
+
+  /**
+   * the gihtub page url where the file will be uploaded, it must be a page that contains the file-attachment element
+   * @default
+   * 'https://github.com/user-attachments/files/issues/1'
+   */
+  url?: string;
+
+  /**
+   * get the authenticity token and repository id from the page
+   */
+  getAuthenticity?: () => Promise<Authenticity> | Authenticity;
+
+  /**
+   * if you want to use a custom fetch function to skip cors limitation
+   *
+   * or you can use it to set the cookie
+   *
+   * @default globalThis.fetch
+   */
+  fetch?: SubFetch;
+};
+```
