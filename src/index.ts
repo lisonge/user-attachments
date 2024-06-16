@@ -4,8 +4,9 @@ import {
   acceptMimeMap,
   UploadError,
   defaultGetAuthenticity,
+  filterNotNullObject,
 } from './util';
-import type { Authenticity } from './util';
+import type { Authenticity, SubFetch } from './util';
 
 type UploadPoliciesAssetsRsonpse = {
   upload_url: string;
@@ -30,7 +31,13 @@ const defaultUrl = 'https://github.com/user-attachments/files/issues/1';
 
 export type UolpadOptions = {
   file: File;
-  cookie: string;
+
+  /**
+   * the cookie string of the github page, you can get it from the browser developer tools
+   *
+   * if you not set it, you must set fetch parameter
+   */
+  cookie?: string;
 
   /**
    * the gihtub page url where the file will be uploaded, it must be a page that contains the file-attachment element
@@ -43,10 +50,19 @@ export type UolpadOptions = {
    * get the authenticity token and repository id from the page
    */
   getAuthenticity?: () => Promise<Authenticity> | Authenticity;
+
+  /**
+   * if you want to use a custom fetch function to skip cors limitation
+   *
+   * or you can use it to set the cookie
+   *
+   * @default globalThis.fetch
+   */
+  fetch?: SubFetch;
 };
 
 export const uploadPoliciesAssets = async (options: UolpadOptions) => {
-  const { cookie, url = defaultUrl } = options;
+  const { cookie, url = defaultUrl, fetch = globalThis.fetch } = options;
 
   // check file name extension
   const fileExt = options.file.name.substring(
@@ -67,7 +83,7 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
 
   const { authenticity_token, repository_id } = await (options.getAuthenticity
     ? options.getAuthenticity()
-    : defaultGetAuthenticity(url, cookie));
+    : defaultGetAuthenticity(fetch, url, cookie));
 
   // prepare upload asset
   const policiesResp: UploadPoliciesAssetsRsonpse = await fetch(
@@ -81,11 +97,11 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
         size: file.size.toString(),
         repository_id,
       }),
-      headers: {
+      headers: filterNotNullObject({
         ...defaultHeaders,
         cookie: cookie,
         referer: url,
-      },
+      }),
     }
   ).then(async (r) => {
     if (!r.ok) {
@@ -101,11 +117,11 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
       ...policiesResp.form,
       file,
     }),
-    headers: {
+    headers: filterNotNullObject({
       ...defaultHeaders,
       cookie,
       referer: url,
-    },
+    }),
   }).then(async (r) => {
     if (!r.ok) {
       throw new UploadError(`failed upload to s3`, r);
@@ -120,13 +136,13 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
       body: obj2form({
         authenticity_token: policiesResp.asset_upload_authenticity_token,
       }),
-      headers: {
+      headers: filterNotNullObject({
         ...defaultHeaders,
         // must add `Accept` request headers
         Accept: `application/json`,
         cookie,
         referer: url,
-      },
+      }),
     }
   ).then(async (r) => {
     if (!r.ok) {

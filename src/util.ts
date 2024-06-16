@@ -77,14 +77,15 @@ const tokenRegex =
 const repositoryIdRegex = /data-upload-repository-id="([0-9]+)"/;
 
 export const defaultGetAuthenticity = async (
+  fetch: SubFetch,
   url: string,
-  cookie: string
+  cookie: string | undefined
 ): Promise<Authenticity> => {
   const resp = await fetch(url, {
-    headers: {
+    headers: filterNotNullObject({
       ...defaultHeaders,
       cookie,
-    },
+    }),
   });
   const text = await resp.text();
   let authenticity_token: string | undefined = undefined;
@@ -114,4 +115,26 @@ export const defaultGetAuthenticity = async (
     throw new Error('not found authenticity_token');
   }
   return { authenticity_token, repository_id };
+};
+
+export type SubFetch = (
+  input: string,
+  init: {
+    method?: string;
+    headers?: Record<string, string>;
+    body?: FormData;
+  }
+) => Promise<Response>;
+
+export const filterNotNullObject = (
+  obj: Record<string, string | null | undefined>
+): Record<string, string> => {
+  const newObj: Record<string, string> = {};
+  for (const k in obj) {
+    const v = obj[k];
+    if (v !== undefined && v !== null) {
+      newObj[k] = v;
+    }
+  }
+  return newObj;
 };
