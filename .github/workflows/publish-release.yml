@@ -24,7 +24,7 @@ jobs:
       - name: Publish package
         run: |
           pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
-          pnpm publish
+          pnpm publish --no-git-checks
 
       - name: Create Release
         uses: actions/create-release@v1
