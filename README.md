@@ -31,4 +31,16 @@ console.log(asset);
   original_name: 'file.txt'
 }
 */
+
+/*
+// if you uplod image
+{
+  id: 340077278,
+  name: 'test.png',
+  size: 119,
+  content_type: 'image/png',
+  href: 'https://github.com/user-attachments/files/assets/38517192/a7d6a234-6019-44e0-a8a8-e4bc145c852c',
+  original_name: 'test.png'
+}
+*/
 ```
