@@ -80,3 +80,9 @@ export type UolpadOptions = {
   fetch?: SubFetch;
 };
 ```
+
+## demo
+
+you must use [Disable-CSP](https://github.com/lisonge/Disable-CSP) to disable github csp for script
+
+![image](https://github.com/lisonge/user-attachments/assets/38517192/cd0ccced-8a56-4f8b-9fa4-27764f055dd0)
