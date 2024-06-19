@@ -28,7 +28,7 @@ export type PoliciesAsset = {
   href: string;
 };
 
-const defaultUrl = 'https://github.com/user-attachments/files/issues/1';
+const defaultUrl = 'https://github.com/lisonge/user-attachments/issues/1';
 
 export type UolpadOptions = {
   file: File;
@@ -43,7 +43,7 @@ export type UolpadOptions = {
   /**
    * the gihtub page url where the file will be uploaded, it must be a page that contains the file-attachment element
    * @default
-   * 'https://github.com/user-attachments/files/issues/1'
+   * 'https://github.com/lisonge/user-attachments/issues/1'
    */
   url?: string;
 
