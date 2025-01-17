@@ -3,34 +3,39 @@ import {
   defaultHeaders,
   acceptMimeMap,
   UploadError,
-  defaultGetAuthenticity,
   filterNotNullObject,
 } from './util';
-import type { Authenticity, SubFetch } from './util';
+import type { SubFetch } from './util';
 
 export { acceptMimeMap, UploadError };
-export type { Authenticity, SubFetch };
+export type { SubFetch };
 
-type UploadPoliciesAssetsRsonpse = {
+interface UploadPoliciesAssetsRsonpse {
   upload_url: string;
   form: Record<string, string>;
   asset: PoliciesAsset;
   asset_upload_url: string;
   asset_upload_authenticity_token: string;
-};
+}
 
-export type PoliciesAsset = {
+export interface PoliciesAsset {
   id: number;
   name: string;
   size: number;
   content_type: string;
   original_name: string;
   href: string;
-};
+}
 
-const defaultUrl = 'https://github.com/lisonge/user-attachments/issues/1';
+export interface UolpadOptions {
 
-export type UolpadOptions = {
+  /**
+   * the repository id
+   * 
+   * example https://api.github.com/repos/lisonge/user-attachments
+   */
+  repositoryId: string | number;
+
   file: File;
 
   /**
@@ -41,18 +46,6 @@ export type UolpadOptions = {
   cookie?: string;
 
   /**
-   * the gihtub page url where the file will be uploaded, it must be a page that contains the file-attachment element
-   * @default
-   * 'https://github.com/lisonge/user-attachments/issues/1'
-   */
-  url?: string;
-
-  /**
-   * get the authenticity token and repository id from the page
-   */
-  getAuthenticity?: () => Promise<Authenticity> | Authenticity;
-
-  /**
    * if you want to use a custom fetch function to skip cors limitation
    *
    * or you can use it to set the cookie
@@ -60,10 +53,10 @@ export type UolpadOptions = {
    * @default globalThis.fetch
    */
   fetch?: SubFetch;
-};
+}
 
 export const uploadPoliciesAssets = async (options: UolpadOptions) => {
-  const { cookie, url = defaultUrl, fetch = globalThis.fetch } = options;
+  const { cookie, fetch = globalThis.fetch, repositoryId } = options;
 
   // check file name extension
   const fileExt = options.file.name.substring(
@@ -82,30 +75,27 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
         type: content_type,
       });
 
-  const { authenticity_token, repository_id } = await (options.getAuthenticity
-    ? options.getAuthenticity()
-    : defaultGetAuthenticity(fetch, url, cookie));
-
+  const formData = new FormData();
+  if (repositoryId) {
+    formData.append('repository_id', String(repositoryId));
+  }
+  formData.append('name', file.name);
+  formData.append('size', file.size.toString());
+  formData.append('content_type', file.type);
   // prepare upload asset
   const policiesResp: UploadPoliciesAssetsRsonpse = await fetch(
     `https://github.com/upload/policies/assets`,
     {
-      method: `POST`,
-      body: obj2form({
-        authenticity_token,
-        content_type: file.type,
-        name: file.name,
-        size: file.size.toString(),
-        repository_id,
-      }),
+      method: 'POST',
+      body: formData,
       headers: filterNotNullObject({
         ...defaultHeaders,
         cookie: cookie,
-        referer: url,
       }),
     }
   ).then(async (r) => {
     if (!r.ok) {
+      console.log(await r.text());
       throw new UploadError(`failed upload policies assets`, r);
     }
     return r.json();
@@ -121,7 +111,6 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
     headers: filterNotNullObject({
       ...defaultHeaders,
       cookie,
-      referer: url,
     }),
   }).then(async (r) => {
     if (!r.ok) {
@@ -142,7 +131,6 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
         // must add `Accept` request headers
         Accept: `application/json`,
         cookie,
-        referer: url,
       }),
     }
   ).then(async (r) => {

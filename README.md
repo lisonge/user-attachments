@@ -13,11 +13,16 @@ pnpm add user-attachments
 ```ts
 import fs from 'node:fs/promises';
 import process from 'node:process';
-import { uploadPoliciesAssets } from 'user-attachments';
+import { uploadPoliciesAssets } from '../src/index';
+
+const cookie = (
+  await fs.readFile(process.cwd() + '/test/cookie.txt', 'utf-8')
+).trimEnd();
 
 const asset = await uploadPoliciesAssets({
-  cookie: await fs.readFile(process.cwd() + '/test/cookie.txt', 'utf-8'),
+  cookie,
   file: new File(['233'], 'file.txt'),
+  repositoryId: '693968148',
 });
 
 console.log(asset);
@@ -48,7 +53,15 @@ console.log(asset);
 ## options
 
 ```ts
-export type UolpadOptions = {
+export interface UolpadOptions {
+
+  /**
+   * the repository id
+   * 
+   * example https://api.github.com/repos/lisonge/user-attachments
+   */
+  repositoryId: string | number;
+
   file: File;
 
   /**
@@ -59,18 +72,6 @@ export type UolpadOptions = {
   cookie?: string;
 
   /**
-   * the gihtub page url where the file will be uploaded, it must be a page that contains the file-attachment element
-   * @default
-   * 'https://github.com/lisonge/user-attachments/issues/1'
-   */
-  url?: string;
-
-  /**
-   * get the authenticity token and repository id from the page
-   */
-  getAuthenticity?: () => Promise<Authenticity> | Authenticity;
-
-  /**
    * if you want to use a custom fetch function to skip cors limitation
    *
    * or you can use it to set the cookie
@@ -78,7 +79,7 @@ export type UolpadOptions = {
    * @default globalThis.fetch
    */
   fetch?: SubFetch;
-};
+}
 ```
 
 ## demo

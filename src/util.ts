@@ -1,4 +1,6 @@
-export const obj2form = (obj: Record<string, string | File | Blob>) => {
+export const obj2form = (
+  obj: Record<string, string | File | Blob | undefined>
+) => {
   const fd = new FormData();
   for (const k in obj) {
     const v = obj[k];
@@ -17,17 +19,23 @@ export const defaultHeaders = {
   'User-Agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0',
   origin: `https://github.com`,
+  referer: 'https://github.com/',
+  'GitHub-Verified-Fetch': 'true',
+  'X-Requested-With': 'XMLHttpRequest',
 };
 
 export const acceptMimeMap: Record<string, string> = {
+  // File types that are acceptable in any context
+  svg: 'image/svg+xml',
   gif: 'image/gif',
-  jpeg: 'image/jpeg',
   jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
   mov: 'video/quicktime',
   mp4: 'video/mp4',
-  png: 'image/png',
-  svg: 'image/svg+xml',
   webm: 'video/webm',
+
+  // File types that are only acceptable when there is a target repo to upload to, include the upper list
   cpuprofile: 'application/json',
   csv: 'text/csv',
   dmp: 'application/octet-stream',
@@ -66,65 +74,16 @@ export class UploadError extends Error {
   }
 }
 
-export type Authenticity = {
-  repository_id: string;
-  authenticity_token: string;
-};
-
-const tokenRegex =
-  /\<input\s+type="hidden"\s+value="([0-9a-zA-Z\-_]+)"\s+data-csrf="true"\s+class="js-data-upload-policy-url-csrf"\s+\/\>/;
-
-const repositoryIdRegex = /data-upload-repository-id="([0-9]+)"/;
-
-export const defaultGetAuthenticity = async (
-  fetch: SubFetch,
-  url: string,
-  cookie: string | undefined
-): Promise<Authenticity> => {
-  const resp = await fetch(url, {
-    headers: filterNotNullObject({
-      ...defaultHeaders,
-      cookie,
-    }),
-  });
-  const text = await resp.text();
-  let authenticity_token: string | undefined = undefined;
-  let repository_id: string | undefined = undefined;
-  if (typeof DOMParser !== 'undefined') {
-    const doc = new DOMParser().parseFromString(text, 'text/html');
-    authenticity_token =
-      doc
-        .querySelector(
-          `file-attachment input.js-data-upload-policy-url-csrf[value]`
-        )
-        ?.getAttribute('value') || undefined;
-
-    repository_id =
-      doc
-        .querySelector('file-attachment')
-        ?.getAttribute('data-upload-repository-id') || undefined;
-  } else {
-    authenticity_token = text.match(tokenRegex)?.[1];
-    repository_id = text.match(repositoryIdRegex)?.[1];
-  }
-
-  if (!repository_id) {
-    throw new Error('not found repository_id');
-  }
-  if (!authenticity_token) {
-    throw new Error('not found authenticity_token');
-  }
-  return { authenticity_token, repository_id };
-};
-
-export type SubFetch = (
-  input: string,
-  init: {
-    method?: string;
-    headers?: Record<string, string>;
-    body?: FormData;
-  }
-) => Promise<Response>;
+export interface SubFetch {
+  (
+    input: string,
+    init: {
+      method?: string;
+      headers?: Record<string, string>;
+      body?: FormData;
+    }
+  ): Promise<Response>;
+}
 
 export const filterNotNullObject = (
   obj: Record<string, string | null | undefined>
