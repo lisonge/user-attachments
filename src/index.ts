@@ -99,7 +99,6 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
     }
   ).then(async (r) => {
     if (!r.ok) {
-      console.log(await r.text());
       throw new UploadError(`failed upload policies assets`, r);
     }
     return r.json();
