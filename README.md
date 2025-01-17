@@ -81,3 +81,11 @@ export interface UolpadOptions {
   fetch?: SubFetch;
 }
 ```
+
+## example
+
+Install [Disable-CSP](https://github.com/lisonge/Disable-CSP), Disable HTTP CSP
+
+open devtools console and run [browser.mjs](./test/browser.mjs)
+
+![Image](https://github.com/user-attachments/assets/e02db90f-f065-48ea-b893-600a1da83ac5)
