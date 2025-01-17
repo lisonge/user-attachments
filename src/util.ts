@@ -20,8 +20,6 @@ export const defaultHeaders = {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0',
   origin: `https://github.com`,
   referer: 'https://github.com/',
-  'GitHub-Verified-Fetch': 'true',
-  'X-Requested-With': 'XMLHttpRequest',
 };
 
 export const acceptMimeMap: Record<string, string> = {

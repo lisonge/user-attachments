@@ -12,10 +12,13 @@ export type { SubFetch };
 
 interface UploadPoliciesAssetsRsonpse {
   upload_url: string;
+  upload_authenticity_token: string;
   form: Record<string, string>;
+  header: Record<string, string>;
   asset: PoliciesAsset;
   asset_upload_url: string;
   asset_upload_authenticity_token: string;
+  same_origin: boolean;
 }
 
 export interface PoliciesAsset {
@@ -28,10 +31,9 @@ export interface PoliciesAsset {
 }
 
 export interface UolpadOptions {
-
   /**
    * the repository id
-   * 
+   *
    * example https://api.github.com/repos/lisonge/user-attachments
    */
   repositoryId: string | number;
@@ -91,6 +93,8 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
       headers: filterNotNullObject({
         ...defaultHeaders,
         cookie: cookie,
+        'GitHub-Verified-Fetch': 'true',
+        'X-Requested-With': 'XMLHttpRequest',
       }),
     }
   ).then(async (r) => {
@@ -109,7 +113,11 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
       file,
     }),
     headers: filterNotNullObject({
+      authenticity_token: policiesResp.same_origin
+        ? policiesResp.upload_authenticity_token
+        : undefined,
       ...defaultHeaders,
+      ...policiesResp.header,
       cookie,
     }),
   }).then(async (r) => {
@@ -128,9 +136,9 @@ export const uploadPoliciesAssets = async (options: UolpadOptions) => {
       }),
       headers: filterNotNullObject({
         ...defaultHeaders,
-        // must add `Accept` request headers
-        Accept: `application/json`,
         cookie,
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
       }),
     }
   ).then(async (r) => {
