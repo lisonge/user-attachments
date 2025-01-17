@@ -1,3 +1,3 @@
-# v1.1.2
+# v2.0.1
 
-- fix: change defaultUrl
+- feat: adapt github api params format
