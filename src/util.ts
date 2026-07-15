@@ -63,12 +63,15 @@ export const acceptMimeMap: Record<string, string> = {
 };
 
 export class UploadError extends Error {
+  response: Response;
+
   constructor(
     message: string,
-    public response: Response,
+    response: Response,
     options?: ErrorOptions
   ) {
     super(message, options);
+    this.response = response;
   }
 }
 

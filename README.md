@@ -13,7 +13,7 @@ pnpm add user-attachments
 ```ts
 import fs from 'node:fs/promises';
 import process from 'node:process';
-import { uploadPoliciesAssets } from '../src/index';
+import { uploadPoliciesAssets } from 'user-attachments';
 
 const cookie = (
   await fs.readFile(process.cwd() + '/test/cookie.txt', 'utf-8')
@@ -86,6 +86,6 @@ export interface UolpadOptions {
 
 Install [Disable-CSP](https://github.com/lisonge/Disable-CSP), Disable HTTP CSP
 
-open devtools console and run [browser.mjs](./test/browser.mjs)
+open devtools console and run [browser.ts](./test/browser.ts)
 
 ![Image](https://github.com/user-attachments/assets/e02db90f-f065-48ea-b893-600a1da83ac5)

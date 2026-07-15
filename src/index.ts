@@ -4,8 +4,8 @@ import {
   acceptMimeMap,
   UploadError,
   filterNotNullObject,
-} from './util';
-import type { SubFetch } from './util';
+} from './util.ts';
+import type { SubFetch } from './util.ts';
 
 export { acceptMimeMap, UploadError };
 export type { SubFetch };

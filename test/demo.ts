@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import process from 'node:process';
-import { uploadPoliciesAssets } from '../src/index';
+import { uploadPoliciesAssets } from '../src/index.ts';
 
 const cookie = (
   await fs.readFile(process.cwd() + '/test/cookie.txt', 'utf-8')

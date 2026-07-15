@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "strict": true,
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["node"],
     "moduleResolution": "bundler",
-    "strict": true,
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "skipLibCheck": true,
-    "declaration": false,
-    "sourceMap": false,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
     "noUnusedLocals": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "baseUrl": "."
+    "rootDir": "."
   },
-  "include": ["src", "demo"]
+  "include": ["src", "test", "tsdown.config.ts"]
 }

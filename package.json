@@ -2,14 +2,22 @@
   "name": "user-attachments",
   "version": "2.0.2",
   "type": "module",
-  "main": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
-    "build": "unbuild"
+    "build": "tsdown",
+    "prepublishOnly": "tsdown",
+    "test": "node --test test/index.test.ts",
+    "test:demo": "node test/demo.ts",
+    "type-check": "tsc"
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "exports": {
+      ".": "./dist/index.js"
+    }
   },
   "homepage": "https://github.com/lisonge/user-attachments#readme",
   "repository": {
@@ -23,13 +31,20 @@
     "dist"
   ],
   "devDependencies": {
-    "@types/node": "22.10.7",
-    "tsx": "4.19.2",
-    "typescript": "5.7.3",
-    "unbuild": "3.3.1"
+    "@types/node": "^26.1.1",
+    "tsdown": "0.22.7",
+    "typescript": "^6.0.3"
   },
-  "packageManager": "pnpm@9.15.4",
-  "volta": {
-    "node": "22.13.0"
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.5.0",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.13.0",
+      "onFail": "error"
+    }
   }
 }
